@@ -435,7 +435,9 @@ app.get("/logs", verificarToken, async (req, res) => {
   }
 });
 
-
+app.get('/', (req, res) => {
+  res.send('Backend funcionando 🚀')
+})
 
 // 🚀 INICIAR SERVIDOR
 const PORT = process.env.PORT || 3000
