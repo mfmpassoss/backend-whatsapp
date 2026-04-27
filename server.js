@@ -76,7 +76,36 @@ app.post('/alunos', verificarToken, async (req, res) => {
 app.get('/alunos', verificarToken, async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM alunos ORDER BY id DESC')
-    res.json(result.rows)
+
+    const hoje = new Date()
+    const mesAtual = hoje.getMonth()
+
+    function getSemanaAtual() {
+      const inicioAno = new Date(hoje.getFullYear(), 0, 1)
+      const dias = Math.floor((hoje - inicioAno) / (24 * 60 * 60 * 1000))
+      return Math.ceil((dias + inicioAno.getDay() + 1) / 7)
+    }
+
+    const semanaAtual = getSemanaAtual()
+
+    const alunosCorrigidos = result.rows.map(aluno => ({
+      ...aluno,
+
+      // 📆 aula semanal
+      fez_aula:
+        aluno.semana_aula === semanaAtual
+          ? aluno.fez_aula
+          : false,
+
+      // 💰 pagamento mensal
+      pagou:
+        aluno.mes_pagamento === mesAtual
+          ? aluno.pagou
+          : false
+    }))
+
+    res.json(alunosCorrigidos)
+
   } catch (err) {
     console.error(err)
     res.status(500).send('Erro interno do servidor')
