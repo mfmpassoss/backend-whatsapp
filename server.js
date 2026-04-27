@@ -146,8 +146,8 @@ app.get('/motivos/:aluno_id', verificarToken, async (req, res) => {
   }
 });
 
-
-const SECRET = process.env.JWT_SECRET; // depois melhora isso
+const SECRET = process.env.JWT_SECRET || "fallback_dev_secret";
+ // depois melhora isso
 
 function verificarToken(req, res, next) {
   const authHeader = req.headers.authorization;
