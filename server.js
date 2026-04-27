@@ -465,7 +465,24 @@ app.get("/logs", verificarToken, async (req, res) => {
 
 app.get('/', (req, res) => {
   res.send('Backend funcionando 🚀')
+
+
 })
+
+
+app.delete('/alunos/:id', verificarToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await pool.query('DELETE FROM alunos WHERE id = $1', [id]);
+
+    res.json({ message: 'Aluno removido com sucesso' });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Erro ao deletar aluno');
+  }
+});
 
 // 🚀 INICIAR SERVIDOR
 const PORT = process.env.PORT || 3000
